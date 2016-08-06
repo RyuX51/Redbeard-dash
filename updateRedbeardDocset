@@ -2,14 +2,17 @@
 
 docsets=~/DocSets
 frameworkPath=. # just call it from inside Redbeard.framework/
+iconPath=../ # path for the icon.png and icon@2.png
 
 usage() {
    echo "Usage:"
    echo " `basename $0` version"
 }
 
+# version must be provided
 if [ $# -lt 1 ]; then usage && exit 1; fi
 
+# build docset
 appledoc \
 --project-name Redbeard \
 --project-company "Redbeard Services Ltd" \
@@ -20,9 +23,12 @@ appledoc \
 --templates ~/Library/Application\ Support/appledoc \
 --docset-install-path $docsets \
 $frameworkPath
-cp ~/Repository/tools/icon* $docsets/io.redbeard.Redbeard.docset/
+
+# copy icons and add fallback url to Info.plist
+cp $iconPath/icon* $docsets/io.redbeard.Redbeard.docset/
+plutil -insert "DashDocSetFallbackURL" -string "http://www.redbeard.io/files/documentation/api/v1/index.html" $docsets/io.redbeard.Redbeard.docset/Contents/Info.plist
+
+# create tar archive
 cd $docsets
-plutil -insert "DashDocSetFallbackURL" -string "http://www.redbeard.io/files/documentation/api/v1/index.html" io.redbeard.Redbeard.docset/Contents/Info.plist
 tar --exclude='.DS_Store' -cvzf io.redbeard.Redbeard.tgz io.redbeard.Redbeard.docset
 cd -
-
