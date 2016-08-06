@@ -1,8 +1,9 @@
 #!/bin/bash
 
-docsets=~/DocSets
+docsets=~/DocSets # output dir
 frameworkPath=. # just call it from inside Redbeard.framework/
 iconPath=../ # path for the icon.png and icon@2.png
+appledocTemplateDir=~/Library/Application\ Support/appledoc # check this, it's not there if you used brew to install appledocs
 
 usage() {
    echo "Usage:"
@@ -20,13 +21,14 @@ appledoc \
 --company-id io.redbeard \
 --print-settings \
 --output $docsets \
---templates ~/Library/Application\ Support/appledoc \
+--templates $appledocTemplateDir \
 --docset-install-path $docsets \
 $frameworkPath
 
-# copy icons and add fallback url to Info.plist
+# copy icons, add fallback url and keyword to Info.plist
 cp $iconPath/icon* $docsets/io.redbeard.Redbeard.docset/
 plutil -insert "DashDocSetFallbackURL" -string "http://www.redbeard.io/files/documentation/api/v1/index.html" $docsets/io.redbeard.Redbeard.docset/Contents/Info.plist
+plutil -insert "DocSetPlatformFamily" -string "redbeard" $docsets/io.redbeard.Redbeard.docset/Contents/Info.plist
 
 # create tar archive
 cd $docsets
