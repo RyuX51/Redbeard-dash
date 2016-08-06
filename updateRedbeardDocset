@@ -1,0 +1,28 @@
+#!/bin/bash
+
+docsets=~/DocSets
+frameworkPath=. # just call it from inside Redbeard.framework/
+
+usage() {
+   echo "Usage:"
+   echo " `basename $0` version"
+}
+
+if [ $# -lt 1 ]; then usage && exit 1; fi
+
+appledoc \
+--project-name Redbeard \
+--project-company "Redbeard Services Ltd" \
+--project-version $1 \
+--company-id io.redbeard \
+--print-settings \
+--output $docsets \
+--templates ~/Library/Application\ Support/appledoc \
+--docset-install-path $docsets \
+$frameworkPath
+cp ~/Repository/tools/icon* $docsets/io.redbeard.Redbeard.docset/
+cd $docsets
+plutil -insert "DashDocSetFallbackURL" -string "http://www.redbeard.io/files/documentation/api/v1/index.html" io.redbeard.Redbeard.docset/Contents/Info.plist
+tar --exclude='.DS_Store' -cvzf io.redbeard.Redbeard.tgz io.redbeard.Redbeard.docset
+cd -
+
