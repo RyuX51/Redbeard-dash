@@ -1,2 +1,2 @@
 # Redbeard-dash
-Script for updating the Redbeard docset
+Script for updating the Redbeard Docset
